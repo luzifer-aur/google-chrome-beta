@@ -35,10 +35,10 @@ sha512sums=('6ab9af3ece7cac2fcdd8bb41412441c42d925c4481985ab702ebb45ca949592ed05
             '43344065044b6e8ac12275c49f68b83c1d8208d314bf82d74a9610a2266f0f88d7c2c54d649fb59c66a2edcb7d0b3d7ad816230e2824e1d518f8f4b1e797d4b0')
 
 package() {
-	msg2 "Extracting the data.tar.xz..."
+	printf "Extracting the data.tar.xz..."
 	bsdtar -xf data.tar.xz -C "$pkgdir/"
 
-	msg2 "Moving stuff in place..."
+	printf "Moving stuff in place..."
 	# Launcher
 	install -m755 google-chrome-$_channel.sh "$pkgdir"/usr/bin/google-chrome-$_channel
 
@@ -50,14 +50,16 @@ package() {
 
 	# License
 	install -Dm644 eula_text.html "$pkgdir"/usr/share/licenses/google-chrome-$_channel/eula_text.html
+	install -Dm644 "$pkgdir"/opt/google/chrome-beta/WidevineCdm/LICENSE \
+                   "$pkgdir"/usr/share/licenses/google-chrome-$_channel/WidevineCdm-LICENSE.txt
 
-	msg2 "Fixing Chrome icon resolution..."
+	printf "Fixing Chrome icon resolution..."
 	sed -i \
 		-e "/Exec=/i\StartupWMClass=Google-chrome-$_channel" \
 		-e "s/x-scheme-handler\/ftp;\?//g" \
 		"$pkgdir"/usr/share/applications/google-chrome-$_channel.desktop
 
-	msg2 "Removing Debian Cron job and duplicate product logos..."
+	printf "Removing Debian Cron job and duplicate product logos..."
 	rm -r "$pkgdir"/etc/cron.daily/ "$pkgdir"/opt/google/chrome-$_channel/cron/
 	rm "$pkgdir"/opt/google/chrome-$_channel/product_logo_*.png
 }
